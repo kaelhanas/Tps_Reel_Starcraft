@@ -1,0 +1,142 @@
+Global:
+
+stockMax = 100;
+cpt = 0;
+
+-----------------------
+
+Producteur:
+
+Répéter
+|
+|produire;
+|P(NVide);			
+|déposer;
+|V(NPlein);
+|
+jusque faux
+
+-----------------------
+
+
+Consomateur:
+
+Répéter
+|
+|P(NPlein);
+|prélever;
+|V(NVide);
+|consomer;
+|
+jusque faux
+
+
+-----------------------
+--------------- Lecteurs /Redacteurs
+-----------------------
+
+----
+Strat 1
+----
+
+LECTEUR
+
+P(mutex)
+ nl = nl + 1
+ si nl = 1 alors P(w)
+V(mutex)
+
+ lecture
+
+P(mutex)
+ nl = nl - 1
+ si nl = 0 alors V(w)
+V(mutex)
+
+REDACTEUR
+
+P(w)
+ écriture
+V(w)
+
+
+Les mutex sont la pour proteger la variable nl (nombre de lecteur) 
+
+----
+Strat 2
+----
+LECTEUR
+
+P(mutex)
+ nl = nl + 1
+ si nl = 1 alors P(w)
+V(mutex)
+
+ lecture
+
+P(mutex)
+ nl = nl - 1
+ si nl = 0 alors V(w)
+V(mutex)
+
+REDACTEUR
+
+P(mutex2)
+ P(w)
+  écriture
+ v(w)
+V(mutex2)
+
+----
+Strat 3
+----
+LECTEUR
+
+P(mutex2)
+ P(mutex)
+  nl = nl + 1
+  si nl = 1 alors P(w)
+ V(mutex)
+V(mutex2)
+
+ lecture
+
+P(mutex)
+ nl = nl - 1
+ si nl = 0 alors V(w)
+V(mutex)
+
+REDACTEUR
+
+P(mutex2)
+ P(w)
+  écriture
+ v(w)
+V(mutex2)
+
+
+-----------------------
+--------------- Penser ou Manger, Il faut s'en contenter
+-----------------------
+
+
+#define N 5
+
+void philosophe(int i)
+{
+  while(TRUE)
+  {
+	
+	penser();
+	P(m)
+		prendre_fourchette(i);
+		prendre_fourchette((i+1)%N);
+	
+		manger();
+		poser_fourchette(i);
+		poser_fourchette((i+1)%N);
+	V(m)
+	
+  
+}
+}

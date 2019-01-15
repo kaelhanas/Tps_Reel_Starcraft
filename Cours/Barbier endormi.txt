@@ -1,0 +1,45 @@
+#define N 5
+
+
+
+//Barbier
+void run()
+{
+	while(TRUE)
+	{
+		//Attendre le premier client
+		P(Clients);
+		
+		//Zone critique de gestion
+		// du nombre de clients
+		P(LeMutex);
+		ClientsAttente--;
+		
+		//prendre un client
+		V(Barbier);
+		V(LeMutex);
+	}
+	
+	
+//Clients
+void run()
+{
+	P(LeMutex);
+	
+	//afin de refuser des clients
+	if (ClientsAttente < NbrChaises)
+	{
+		ClientAttente++;
+		// Un client est arrivé
+		V(Clients);
+		V(LeMutex);
+		//le client attend le barbier
+		P(Barbier);
+	}
+	
+	else
+	{
+		// le salon est plein
+		V(LeMutex);
+	}
+}

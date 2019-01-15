@@ -1,0 +1,56 @@
+#define N 5
+#define GAUCHE (i+N-1)%N
+#define DROITE (i+1)%N
+#define PENSE 0
+#define FAIM 1
+#define MANGE 2
+
+typedef int semaphore;
+int state[N];
+
+semaphore mutex = 1;
+semaphore s[N];
+
+void philosophe(int i)
+{
+	while(TRUE)
+	{
+		penser();
+		prendre_fourchette(i);
+		prendre_fourchette((i+1)%N);
+	
+		manger();
+		poser_fourchette(i);
+		poser_fourchette((i+1)%N);
+	}
+}
+
+void prendre_fourchettes(int i)
+{
+	down(&mutex);
+	state[i] = FAIM;
+	
+	test(i);
+	up(&mutex);
+	down(&s[i]);
+}
+
+void poser_fourchettes(i)
+{
+	down(&mutex);
+	state[i] = PENSE;
+	test(GAUCHE);
+	
+	test(DROITE);
+	
+	up(&mutex);
+}
+
+void test(i)
+{
+	if(state[i] == FAIM && state[GAUCHE] != MANGE && state[DROITE] != MANGE)
+	{
+		state[i] = MANGE;
+		up(&s[i];
+	}
+}
